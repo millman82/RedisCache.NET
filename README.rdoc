@@ -1,0 +1,10 @@
+== RedisCache.NET
+
+RedisCache.NET is caching library built on C#.NET.
+
+The goal of RedisCache.NET is to provide a centralized caching solution for
+applications developed in C#.NET.
+
+Coming soon...
+
+* An ASP.NET MVC output caching provider
