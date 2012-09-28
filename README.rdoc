@@ -5,6 +5,10 @@ RedisCache.NET is caching library built on C#.NET.
 The goal of RedisCache.NET is to provide a centralized caching solution for
 applications developed in C#.NET.
 
+First commit of the custom Output Cache Provider.
+
 Coming soon...
 
-* An ASP.NET MVC output caching provider
+* Unit Tests
+* Sample Application
+* Bug fixes discovered as a result of the above two items ;)
