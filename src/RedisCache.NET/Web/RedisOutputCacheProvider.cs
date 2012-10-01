@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
+using System.Configuration;
+using System.IO;
+using System.Runtime.Serialization.Formatters.Binary;
 using System.Web.Caching;
 using ServiceStack.Redis;
-using System.Configuration;
 
 namespace RedisCacheNET.Web
 {
-    public class RedisOutputCacheProvider : OutputCacheProvider
+    public class RedisOutputCacheProvider : OutputCacheProvider, IDisposable
     {
         static IRedisClientsManager _redisClientsManager;
         private object _lockObj = new object();
@@ -41,7 +40,8 @@ namespace RedisCacheNET.Web
         public override void Set(string key, object entry, DateTime utcExpiry)
         {
             var cacheClient = _redisClientsManager.GetCacheClient();
-            cacheClient.Set(key, entry, utcExpiry);
+
+            cacheClient.Set(key, Serialize(entry), utcExpiry);
 
             cacheClient.Dispose();
         }
@@ -49,25 +49,27 @@ namespace RedisCacheNET.Web
         public override object Get(string key)
         {
             var cacheClient = _redisClientsManager.GetCacheClient();
-            object item = cacheClient.Get<object>(key);
+            var cachedValBytes = cacheClient.Get<byte[]>(key);
 
             cacheClient.Dispose();
+
+            object cachedVal = Deserialize(cachedValBytes);
             
-            return item;
+            return cachedVal;
         }
 
         public override object Add(string key, object entry, DateTime utcExpiry)
         {
             var cacheClient = _redisClientsManager.GetCacheClient();
 
-            var item = cacheClient.Get<object>(key);
-            if (item != null)
+            var cachedValBytes = cacheClient.Get<byte[]>(key);
+            if (cachedValBytes != null)
             {
-                return item;
+                return Deserialize(cachedValBytes);
             }
             else
             {
-                cacheClient.Add(key, entry, utcExpiry);
+                cacheClient.Add(key, Serialize(entry), utcExpiry);
             }
 
             cacheClient.Dispose();
@@ -80,6 +82,28 @@ namespace RedisCacheNET.Web
             var cacheClient = _redisClientsManager.GetCacheClient();
             cacheClient.Remove(key);
             cacheClient.Dispose();
+        }
+
+        private static byte[] Serialize(object entry)
+        {
+            var formatter = new BinaryFormatter();
+            var stream = new MemoryStream();
+            formatter.Serialize(stream, entry);
+
+            return stream.ToArray();
+        }
+
+        private static object Deserialize(byte[] serializedEntry)
+        {
+            var formatter = new BinaryFormatter();
+            var stream = new MemoryStream(serializedEntry);
+
+            return formatter.Deserialize(stream);
+        }
+
+        public void Dispose()
+        {
+            _redisClientsManager.Dispose();
         }
     }
 }

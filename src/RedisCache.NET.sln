@@ -3,7 +3,21 @@ Microsoft Visual Studio Solution File, Format Version 11.00
 # Visual Studio 2010
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisCache.NET", "RedisCache.NET\RedisCache.NET.csproj", "{187580AF-AC92-4676-9237-74B2B1181D56}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "tests", "tests", "{010D638F-3D3B-426B-808D-B9F7797D02E1}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RedisCache.NET.Web.Tests", "..\tests\RedisCache.NET.Web.Tests\RedisCache.NET.Web.Tests.csproj", "{EEFAA936-B999-4AE0-ADB9-B38273E20BBE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{14CD96CA-B2E9-4509-98F8-A7D214D764EE}"
+	ProjectSection(SolutionItems) = preProject
+		Local.testsettings = Local.testsettings
+		RedisCache.NET.vsmdi = RedisCache.NET.vsmdi
+		TraceAndTestImpact.testsettings = TraceAndTestImpact.testsettings
+	EndProjectSection
+EndProject
 Global
+	GlobalSection(TestCaseManagementSettings) = postSolution
+		CategoryFile = RedisCache.NET.vsmdi
+	EndGlobalSection
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
@@ -13,8 +27,15 @@ Global
 		{187580AF-AC92-4676-9237-74B2B1181D56}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{187580AF-AC92-4676-9237-74B2B1181D56}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{187580AF-AC92-4676-9237-74B2B1181D56}.Release|Any CPU.Build.0 = Release|Any CPU
+		{EEFAA936-B999-4AE0-ADB9-B38273E20BBE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{EEFAA936-B999-4AE0-ADB9-B38273E20BBE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{EEFAA936-B999-4AE0-ADB9-B38273E20BBE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{EEFAA936-B999-4AE0-ADB9-B38273E20BBE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{EEFAA936-B999-4AE0-ADB9-B38273E20BBE} = {010D638F-3D3B-426B-808D-B9F7797D02E1}
 	EndGlobalSection
 EndGlobal
