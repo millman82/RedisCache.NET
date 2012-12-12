@@ -39,49 +39,52 @@ namespace RedisCacheNET.Web
 
         public override void Set(string key, object entry, DateTime utcExpiry)
         {
-            var cacheClient = _redisClientsManager.GetCacheClient();
-
-            cacheClient.Set(key, Serialize(entry), utcExpiry);
-
-            cacheClient.Dispose();
+            using (var cacheClient = _redisClientsManager.GetCacheClient())
+            {
+                cacheClient.Set(key, Serialize(entry), utcExpiry);
+            }
         }
 
         public override object Get(string key)
         {
-            var cacheClient = _redisClientsManager.GetCacheClient();
-            var cachedValBytes = cacheClient.Get<byte[]>(key);
-
-            cacheClient.Dispose();
-
-            object cachedVal = Deserialize(cachedValBytes);
+            byte[] cachedValBytes = null;
+            using (var cacheClient = _redisClientsManager.GetCacheClient())
+            {
+                cachedValBytes = cacheClient.Get<byte[]>(key);
+            }
+            
+            object cachedVal = null;
+            if (cachedValBytes != null)
+                cachedVal = Deserialize(cachedValBytes);
             
             return cachedVal;
         }
 
         public override object Add(string key, object entry, DateTime utcExpiry)
         {
-            var cacheClient = _redisClientsManager.GetCacheClient();
-
-            var cachedValBytes = cacheClient.Get<byte[]>(key);
-            if (cachedValBytes != null)
+            using (var cacheClient = _redisClientsManager.GetCacheClient())
             {
-                return Deserialize(cachedValBytes);
+                var cachedValBytes = cacheClient.Get<byte[]>(key);
+                
+                if (cachedValBytes != null)
+                {
+                    return Deserialize(cachedValBytes);
+                }
+                else
+                {
+                    cacheClient.Add(key, Serialize(entry), utcExpiry);
+                }
             }
-            else
-            {
-                cacheClient.Add(key, Serialize(entry), utcExpiry);
-            }
-
-            cacheClient.Dispose();
 
             return entry;
         }
 
         public override void Remove(string key)
         {
-            var cacheClient = _redisClientsManager.GetCacheClient();
-            cacheClient.Remove(key);
-            cacheClient.Dispose();
+            using (var cacheClient = _redisClientsManager.GetCacheClient())
+            {
+                cacheClient.Remove(key);
+            }
         }
 
         private static byte[] Serialize(object entry)
